@@ -116,12 +116,15 @@ const WhyAISection = () => {
                   <iframe
                     width="100%"
                     height="100%"
-                    src="https://www.youtube.com/embed/ldekv-wx7lo?si=t1x1PxMsY9Su6AMn"
+                    src="https://www.youtube.com/embed/ldekv-wx7lo"
                     title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   ></iframe>
+                  {/* 
+                    Note: This iframe requires the following CSP directives to be set in your server configuration:
+                    Content-Security-Policy: default-src 'self'; frame-src 'self' https://www.youtube.com
+                  */}
                 </div>
 
                 <h3 className="text-2xl font-bold mb-4 text-white">
