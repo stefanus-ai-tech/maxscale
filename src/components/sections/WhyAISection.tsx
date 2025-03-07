@@ -14,16 +14,25 @@ const WhyAISection = () => {
     if (!existingCspMeta) {
       const cspMeta = document.createElement("meta");
       cspMeta.httpEquiv = "Content-Security-Policy";
+      // Updated CSP to properly allow YouTube iframes and related resources
       cspMeta.content =
-        "default-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com";
+        "default-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com; font-src 'self';";
       head.appendChild(cspMeta);
     }
 
-    // Add Permissions-Policy header to handle interest-cohort deprecation
-    const permissionsPolicyMeta = document.createElement("meta");
-    permissionsPolicyMeta.httpEquiv = "Permissions-Policy";
-    permissionsPolicyMeta.content = "interest-cohort=()";
-    head.appendChild(permissionsPolicyMeta);
+    // Update Permissions-Policy header with current supported features
+    const permissionsPolicyMeta = document.querySelector(
+      'meta[http-equiv="Permissions-Policy"]'
+    );
+
+    if (!permissionsPolicyMeta) {
+      const newPermissionsPolicyMeta = document.createElement("meta");
+      newPermissionsPolicyMeta.httpEquiv = "Permissions-Policy";
+      // Use currently supported features instead of deprecated interest-cohort
+      newPermissionsPolicyMeta.content =
+        "camera=(), microphone=(), geolocation=()";
+      head.appendChild(newPermissionsPolicyMeta);
+    }
 
     // Log CSP meta tags
     const updatedCspMeta = document.querySelector(
@@ -41,13 +50,18 @@ const WhyAISection = () => {
 
     // Test iframe loading
     const testIframeLoad = () => {
-      const iframe = document.querySelector("iframe");
-      iframe?.addEventListener("load", () => {
-        console.log("YouTube iframe loaded successfully");
-      });
-      iframe?.addEventListener("error", (error) => {
-        console.error("YouTube iframe failed to load:", error);
-      });
+      // Wait for iframe to be in the DOM
+      setTimeout(() => {
+        const iframe = document.querySelector("iframe");
+        if (iframe) {
+          iframe.addEventListener("load", () => {
+            console.log("YouTube iframe loaded successfully");
+          });
+          iframe.addEventListener("error", (error) => {
+            console.error("YouTube iframe failed to load:", error);
+          });
+        }
+      }, 1000);
     };
     testIframeLoad();
   }, []);
