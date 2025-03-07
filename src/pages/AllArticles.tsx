@@ -5,8 +5,8 @@ import Footer from '@/components/layout/Footer';
 import MaxScaleButton from '@/components/ui/MaxScaleButton';
 import { Link } from 'react-router-dom';
 
-const Blog = () => {
-  const blogPosts = [
+const AllArticles = () => {
+  const allBlogPosts = [
     {
       id: "ai-customer-service",
       title: "How AI is Transforming Customer Service in 2023",
@@ -42,6 +42,42 @@ const Blog = () => {
       category: "AI Ethics",
       image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?fit=crop&w=800&h=500",
       readTime: "6 min read"
+    },
+    {
+      id: "ai-future",
+      title: "The Future of AI: What to Expect in the Next Decade",
+      excerpt: "AI technology is evolving rapidly. Learn what advancements we can expect to see in the coming years and how they'll impact businesses across industries.",
+      date: "August 15, 2023",
+      category: "AI Trends",
+      image: "https://images.unsplash.com/photo-1534723328310-e82dad3ee43f?fit=crop&w=800&h=500",
+      readTime: "8 min read"
+    },
+    {
+      id: "ai-implementation",
+      title: "A Step-by-Step Guide to AI Implementation",
+      excerpt: "Implementing AI can be daunting. Follow this comprehensive guide to successfully integrate AI solutions into your business processes.",
+      date: "July 25, 2023",
+      category: "Implementation",
+      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?fit=crop&w=800&h=500",
+      readTime: "10 min read"
+    },
+    {
+      id: "ai-recruiting",
+      title: "How AI is Changing the Recruiting Landscape",
+      excerpt: "AI-powered recruitment tools are transforming how companies find and hire talent. Discover the latest innovations and best practices.",
+      date: "July 10, 2023",
+      category: "HR Tech",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?fit=crop&w=800&h=500",
+      readTime: "6 min read"
+    },
+    {
+      id: "ai-challenges",
+      title: "Overcoming Common AI Implementation Challenges",
+      excerpt: "Many businesses face similar obstacles when implementing AI. Learn practical strategies to overcome these common challenges.",
+      date: "June 30, 2023",
+      category: "Implementation",
+      image: "https://images.unsplash.com/photo-1590402494610-2c378a9114c6?fit=crop&w=800&h=500",
+      readTime: "7 min read"
     }
   ];
 
@@ -52,17 +88,16 @@ const Blog = () => {
         <div className="maxscale-container py-16">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h1 className="text-4xl font-bold mb-6">
-              <span className="text-white">MaxScale </span>
-              <span className="text-gradient">Blog</span>
+              <span className="text-white">All </span>
+              <span className="text-gradient">Articles</span>
             </h1>
             <p className="text-gray-300 text-lg">
-              Insights, trends, and practical advice on AI implementation, business growth, 
-              and technology innovation.
+              Browse our complete collection of insights, trends, and practical advice.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            {blogPosts.map((post, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {allBlogPosts.map((post, index) => (
               <div key={index} className="glass-panel overflow-hidden flex flex-col h-full">
                 <div className="h-48 overflow-hidden">
                   <img 
@@ -94,12 +129,6 @@ const Blog = () => {
               </div>
             ))}
           </div>
-          
-          <div className="text-center">
-            <Link to="/blog/all">
-              <MaxScaleButton size="lg">View All Articles</MaxScaleButton>
-            </Link>
-          </div>
         </div>
       </main>
       <Footer />
@@ -107,4 +136,4 @@ const Blog = () => {
   );
 };
 
-export default Blog;
+export default AllArticles;

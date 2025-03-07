@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Facebook, Twitter, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -6,9 +5,9 @@ import { Link, useLocation } from 'react-router-dom';
 const Footer = () => {
   const location = useLocation();
 
-  const handleServiceLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
-    // If we're already on the services page, smooth scroll to the section
-    if (location.pathname === '/services' && hash.startsWith('#')) {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, targetPath: string, hash?: string) => {
+    // If we're already on the target page and there's a hash, smooth scroll to it
+    if (location.pathname === targetPath && hash) {
       e.preventDefault();
       const targetId = hash.substring(1);
       const targetElement = document.getElementById(targetId);
@@ -19,7 +18,15 @@ const Footer = () => {
           behavior: 'smooth'
         });
       }
+    } else if (location.pathname === targetPath) {
+      // If we're on the same page but no hash, scroll to top
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
+    // Otherwise, let the Router handle the navigation normally
   };
 
   return (
@@ -53,7 +60,7 @@ const Footer = () => {
                 <Link 
                   to="/services#website" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleServiceLinkClick(e, '#website')}
+                  onClick={(e) => handleLinkClick(e, '/services', '#website')}
                 >
                   AI-Powered Website
                 </Link>
@@ -62,7 +69,7 @@ const Footer = () => {
                 <Link 
                   to="/services#customer-service" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleServiceLinkClick(e, '#customer-service')}
+                  onClick={(e) => handleLinkClick(e, '/services', '#customer-service')}
                 >
                   Customer Service Solutions
                 </Link>
@@ -71,7 +78,7 @@ const Footer = () => {
                 <Link 
                   to="/services#automation" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleServiceLinkClick(e, '#automation')}
+                  onClick={(e) => handleLinkClick(e, '/services', '#automation')}
                 >
                   Business Process Automation
                 </Link>
@@ -80,7 +87,7 @@ const Footer = () => {
                 <Link 
                   to="/services#scalable" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleServiceLinkClick(e, '#scalable')}
+                  onClick={(e) => handleLinkClick(e, '/services', '#scalable')}
                 >
                   Scalable AI Solutions
                 </Link>
@@ -92,27 +99,47 @@ const Footer = () => {
             <h3 className="text-white font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/about" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Link 
+                  to="/about" 
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  onClick={(e) => handleLinkClick(e, '/about')}
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/case-studies" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Link 
+                  to="/case-studies" 
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  onClick={(e) => handleLinkClick(e, '/case-studies')}
+                >
                   Case Studies
                 </Link>
               </li>
               <li>
-                <Link to="/pricing" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Link 
+                  to="/pricing" 
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  onClick={(e) => handleLinkClick(e, '/pricing')}
+                >
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Link 
+                  to="/blog" 
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  onClick={(e) => handleLinkClick(e, '/blog')}
+                >
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="/learn-more" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Link 
+                  to="/learn-more" 
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  onClick={(e) => handleLinkClick(e, '/learn-more')}
+                >
                   Learn More
                 </Link>
               </li>
