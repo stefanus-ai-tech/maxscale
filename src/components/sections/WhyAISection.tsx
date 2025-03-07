@@ -5,11 +5,31 @@ import { Link } from "react-router-dom";
 
 const WhyAISection = () => {
   useEffect(() => {
-    // Log CSP meta tags if they exist
-    const cspMeta = document.querySelector(
+    // Add CSP meta tag programmatically
+    const head = document.head;
+    const existingCspMeta = document.querySelector(
       'meta[http-equiv="Content-Security-Policy"]'
     );
-    console.log("CSP Meta Tag:", cspMeta?.getAttribute("content"));
+
+    if (!existingCspMeta) {
+      const cspMeta = document.createElement("meta");
+      cspMeta.httpEquiv = "Content-Security-Policy";
+      cspMeta.content =
+        "default-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com";
+      head.appendChild(cspMeta);
+    }
+
+    // Add Permissions-Policy header to handle interest-cohort deprecation
+    const permissionsPolicyMeta = document.createElement("meta");
+    permissionsPolicyMeta.httpEquiv = "Permissions-Policy";
+    permissionsPolicyMeta.content = "interest-cohort=()";
+    head.appendChild(permissionsPolicyMeta);
+
+    // Log CSP meta tags
+    const updatedCspMeta = document.querySelector(
+      'meta[http-equiv="Content-Security-Policy"]'
+    );
+    console.log("CSP Meta Tag:", updatedCspMeta?.getAttribute("content"));
 
     // Check iframe feature support
     const iframe = document.createElement("iframe");
