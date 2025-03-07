@@ -35,7 +35,7 @@ const Footer = () => {
       <div className="maxscale-container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
-            <Link to="/" className="inline-block mb-4">
+            <Link to="/" className="inline-block mb-4" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <span className="text-2xl font-bold text-gradient">MaxScale</span>
             </Link>
             <p className="text-gray-400 mb-6">

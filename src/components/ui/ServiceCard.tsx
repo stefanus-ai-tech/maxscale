@@ -8,7 +8,7 @@ interface ServiceCardProps {
   title: string;
   description: string[];
   className?: string;
-  style?: React.CSSProperties; // Add the style prop to the interface
+  style?: React.CSSProperties;
 }
 
 const ServiceCard = ({
@@ -16,7 +16,7 @@ const ServiceCard = ({
   title,
   description,
   className,
-  style // Add style to the component props
+  style
 }: ServiceCardProps) => {
   return (
     <div 
@@ -24,7 +24,7 @@ const ServiceCard = ({
         "glass-panel p-6 transition-all duration-300 hover:translate-y-[-5px] hover:shadow-lg hover:shadow-maxscale-accent/20 group animate-fade-in opacity-0 [animation-delay:var(--delay)]",
         className
       )}
-      style={style} // Apply the style prop to the div
+      style={style}
     >
       <div className="flex items-center justify-center w-12 h-12 rounded-lg mb-4 bg-gradient-to-br from-maxscale-accent/20 to-maxscale-secondary/20 group-hover:from-maxscale-accent/30 group-hover:to-maxscale-secondary/30 transition-all duration-300">
         <Icon className="w-6 h-6 text-maxscale-accent" />

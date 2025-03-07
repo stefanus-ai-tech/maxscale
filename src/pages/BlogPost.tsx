@@ -200,7 +200,7 @@ const BlogPost = () => {
             {/* Post Footer */}
             <div className="mt-12 pt-8 border-t border-maxscale-muted flex flex-col md:flex-row justify-between items-center">
               <div className="mb-4 md:mb-0">
-                <Link to="/blog">
+                <Link to="/blog" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                   <MaxScaleButton variant="outline">
                     ← Back to All Posts
                   </MaxScaleButton>
