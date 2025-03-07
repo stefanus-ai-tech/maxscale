@@ -98,9 +98,26 @@ export const withSession = (handler: Handler): Handler => {
 // Verify CSRF token
 export const verifyCsrfToken = (event: any): boolean => {
   try {
-    const csrfToken = event.headers["x-csrf-token"];
+    // Find CSRF token in headers (case-insensitive)
+    const csrfHeaderKey = Object.keys(event.headers).find(
+      (key) => key.toLowerCase() === "x-csrf-token"
+    );
+    const csrfToken = csrfHeaderKey ? event.headers[csrfHeaderKey] : null;
+
+    // Parse cookies
     const cookies = parseCookies(event.headers.cookie || "");
     const cookieCsrfToken = cookies[CSRF_COOKIE_NAME];
+
+    // Log detailed information for debugging
+    console.log("CSRF Verification (detailed):", {
+      headerKeys: Object.keys(event.headers),
+      csrfHeaderKey: csrfHeaderKey,
+      tokenInHeader: csrfToken,
+      tokenInCookie: cookieCsrfToken,
+      allCookies: cookies,
+      rawCookieHeader: event.headers.cookie,
+      headerMatch: csrfToken === cookieCsrfToken,
+    });
 
     console.log("CSRF Verification:", {
       tokenInHeader: !!csrfToken,

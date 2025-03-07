@@ -101,6 +101,26 @@ const emailHandler: Handler = async (event) => {
       headerNames: Object.keys(event.headers).join(", "),
     });
 
+    // Add more detailed logging for CSRF debugging
+    console.log("Request headers (full):", JSON.stringify(event.headers));
+    console.log("Cookie header raw:", event.headers.cookie);
+
+    // Log all cookies for debugging
+    const allCookies = parseCookies(event.headers.cookie || "");
+    console.log("All cookies:", JSON.stringify(allCookies));
+
+    // Check for case-insensitive CSRF token header
+    const csrfHeaderKey = Object.keys(event.headers).find(
+      (key) => key.toLowerCase() === "x-csrf-token"
+    );
+    const csrfHeaderValue = csrfHeaderKey ? event.headers[csrfHeaderKey] : null;
+    console.log(
+      "CSRF header found:",
+      csrfHeaderKey,
+      "with value:",
+      csrfHeaderValue
+    );
+
     if (!verifyCsrfToken(event)) {
       console.error("CSRF token validation failed");
       // Log the specific CSRF issue
