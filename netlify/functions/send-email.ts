@@ -1,0 +1,211 @@
+import { Handler } from "@netlify/functions";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import { z } from "zod"; // Using zod for input validation
+import { withSession, verifyCsrfToken } from "./session-middleware";
+
+// Load environment variables
+dotenv.config();
+console.log("Environment loaded. SMTP_HOST:", process.env.SMTP_HOST);
+console.log("SMTP_USER configured:", !!process.env.SMTP_USER);
+console.log("SMTP_PASS configured:", !!process.env.SMTP_PASS);
+
+// Email recipients - consider moving to environment variables
+const RECIPIENTS = ["stefanusaitech@gmail.com", "irfanwill.co@gmail.com"];
+
+// Define validation schema for input data
+const ContactFormSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100),
+  email: z.string().email("Invalid email address"),
+  company: z.string().optional(),
+  service: z.string().optional(),
+  message: z.string().min(1, "Message is required").max(5000),
+});
+
+// Helper function to sanitize HTML content
+const sanitizeHtml = (str: string): string => {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
+// Simple in-memory rate limiting
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS = 5; // 5 requests per minute
+const rateLimits: Record<string, { count: number; resetTime: number }> = {};
+
+const checkRateLimit = (ip: string): boolean => {
+  const now = Date.now();
+
+  // Initialize or reset expired rate limit
+  if (!rateLimits[ip] || now > rateLimits[ip].resetTime) {
+    rateLimits[ip] = {
+      count: 1,
+      resetTime: now + RATE_LIMIT_WINDOW,
+    };
+    return true;
+  }
+
+  // Increment count and check if limit exceeded
+  rateLimits[ip].count += 1;
+  return rateLimits[ip].count <= MAX_REQUESTS;
+};
+
+const emailHandler: Handler = async (event) => {
+  // Set security headers
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Content-Security-Policy": "default-src 'self'",
+  };
+
+  console.log("Function invoked with method:", event.httpMethod);
+  console.log("Request path:", event.path);
+  console.log("Headers:", JSON.stringify(event.headers));
+
+  // Only allow POST requests
+  if (event.httpMethod !== "POST") {
+    console.log("Method not allowed:", event.httpMethod);
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ message: "Method Not Allowed" }),
+    };
+  }
+
+  try {
+    // Check for CSRF token in headers
+    if (!verifyCsrfToken(event)) {
+      console.error("CSRF token validation failed");
+      return {
+        statusCode: 403,
+        headers,
+        body: JSON.stringify({ message: "CSRF token validation failed" }),
+      };
+    }
+
+    // Apply rate limiting
+    const clientIP =
+      event.headers["client-ip"] ||
+      event.headers["x-forwarded-for"] ||
+      "unknown";
+    if (!checkRateLimit(clientIP)) {
+      console.error("Rate limit exceeded for IP:", clientIP);
+      return {
+        statusCode: 429,
+        headers,
+        body: JSON.stringify({
+          message: "Too many requests. Please try again later.",
+        }),
+      };
+    }
+
+    // Parse the request body
+    let formData;
+    try {
+      formData = JSON.parse(event.body || "{}");
+    } catch (parseError) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ message: "Invalid JSON in request body" }),
+      };
+    }
+
+    // Validate input data using Zod
+    const validationResult = ContactFormSchema.safeParse(formData);
+    if (!validationResult.success) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          message: "Validation failed",
+          errors: validationResult.error.format(),
+        }),
+      };
+    }
+
+    const { name, email, company, service, message } = validationResult.data;
+
+    // Create a transporter using environment variables
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587"),
+      secure: process.env.SMTP_SECURE === "true",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    // Verify SMTP connection
+    try {
+      await transporter.verify();
+    } catch (verifyError) {
+      console.error("SMTP verification failed:", verifyError);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          message: "Failed to connect to email server",
+        }),
+      };
+    }
+
+    // Sanitize all user inputs before using in HTML
+    const sanitizedName = sanitizeHtml(name);
+    const sanitizedEmail = sanitizeHtml(email);
+    const sanitizedCompany = sanitizeHtml(company || "Not provided");
+    const sanitizedService = sanitizeHtml(service || "Not specified");
+    const sanitizedMessage = sanitizeHtml(message);
+
+    // Prepare email content with sanitized inputs
+    const emailContent = `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${sanitizedName}</p>
+      <p><strong>Email:</strong> ${sanitizedEmail}</p>
+      <p><strong>Company:</strong> ${sanitizedCompany}</p>
+      <p><strong>Service Interested In:</strong> ${sanitizedService}</p>
+      <h3>Message:</h3>
+      <p>${sanitizedMessage}</p>
+    `;
+
+    // Send email to all recipients
+    const info = await transporter.sendMail({
+      from: `"MaxScale Website" <${process.env.SMTP_USER}>`,
+      to: RECIPIENTS.join(", "),
+      subject: `New Contact Form Submission from ${sanitizedName}`,
+      html: emailContent,
+      replyTo: email,
+    });
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        message: "Email sent successfully",
+        messageId: info.messageId,
+      }),
+    };
+  } catch (error) {
+    console.error("Error sending email:", error);
+
+    // Don't expose detailed error information to clients
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        message: "An error occurred while processing your request",
+      }),
+    };
+  }
+};
+
+// Export the handler with session middleware
+export const handler = withSession(emailHandler);

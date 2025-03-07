@@ -4,26 +4,143 @@ import Footer from "@/components/layout/Footer";
 import MaxScaleButton from "@/components/ui/MaxScaleButton";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Define form validation schema
+const contactFormSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100),
+  email: z.string().email("Invalid email address"),
+  company: z.string().optional(),
+  service: z.string().optional(),
+  message: z.string().min(1, "Message is required").max(5000),
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
+
+// Function to set cookies from custom headers
+const setCookiesFromHeaders = (response: Response) => {
+  const sessionCookie = response.headers.get("Set-Session-Cookie");
+  const csrfCookie = response.headers.get("Set-CSRF-Cookie");
+
+  if (sessionCookie) {
+    document.cookie = sessionCookie;
+  }
+
+  if (csrfCookie) {
+    document.cookie = csrfCookie;
+    // Also update the CSRF token in sessionStorage for future requests
+    const csrfValue = csrfCookie.split("=")[1]?.split(";")[0];
+    if (csrfValue) {
+      sessionStorage.setItem("csrfToken", csrfValue);
+    }
+  }
+};
 
 const Contact = () => {
   const location = useLocation();
-  const [message, setMessage] = useState("");
-  const [selectedService, setSelectedService] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+  const [csrfToken, setCsrfToken] = useState("");
+
+  // Initialize form with react-hook-form and zod validation
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      company: "",
+      service: "",
+      message: "",
+    },
+  });
+
+  // Generate CSRF token on component mount
+  useEffect(() => {
+    // Generate a random token
+    const token =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
+    setCsrfToken(token);
+
+    // Store token in sessionStorage
+    sessionStorage.setItem("csrfToken", token);
+  }, []);
 
   // Check if user came from the consultation button on pricing page
   useEffect(() => {
     if (location.state && location.state.consultationRequest) {
-      setSelectedService("other");
-      setMessage(
+      setValue("service", "other");
+      setValue(
+        "message",
         "I would like to schedule a free consultation about a custom AI solution for my business."
       );
     }
-  }, [location.state]);
+  }, [location.state, setValue]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, this would submit the form data to a backend
-    alert("Thanks for reaching out! We'll contact you soon.");
+  const onSubmit = async (data: ContactFormValues) => {
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: "" });
+
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify(data),
+        credentials: "same-origin", // Include cookies with the request
+      });
+
+      // Handle custom cookie headers
+      setCookiesFromHeaders(response);
+
+      let responseData;
+      try {
+        responseData = await response.json();
+      } catch (parseError) {
+        responseData = { message: "Failed to parse server response" };
+      }
+
+      if (response.ok) {
+        setSubmitStatus({
+          type: "success",
+          message: "Thanks for reaching out! We'll contact you soon.",
+        });
+        // Reset form
+        reset();
+        // Generate new CSRF token after successful submission
+        const newToken =
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15);
+        setCsrfToken(newToken);
+        sessionStorage.setItem("csrfToken", newToken);
+      } else {
+        setSubmitStatus({
+          type: "error",
+          message:
+            responseData.message || "Something went wrong. Please try again.",
+        });
+      }
+    } catch (error) {
+      setSubmitStatus({
+        type: "error",
+        message: "Network error. Please check your connection and try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -109,6 +226,7 @@ const Contact = () => {
                   <a
                     href="#"
                     className="w-10 h-10 rounded-full bg-maxscale-light flex items-center justify-center text-white hover:bg-maxscale-accent transition-colors"
+                    rel="noopener noreferrer"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -126,6 +244,7 @@ const Contact = () => {
                   <a
                     href="#"
                     className="w-10 h-10 rounded-full bg-maxscale-light flex items-center justify-center text-white hover:bg-maxscale-accent transition-colors"
+                    rel="noopener noreferrer"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -143,6 +262,7 @@ const Contact = () => {
                   <a
                     href="#"
                     className="w-10 h-10 rounded-full bg-maxscale-light flex items-center justify-center text-white hover:bg-maxscale-accent transition-colors"
+                    rel="noopener noreferrer"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -168,7 +288,22 @@ const Contact = () => {
                 Send Us a Message
               </h2>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              {submitStatus.type && (
+                <div
+                  className={`p-4 mb-6 rounded-lg ${
+                    submitStatus.type === "success"
+                      ? "bg-green-900/50 border border-green-700 text-green-300"
+                      : "bg-red-900/50 border border-red-700 text-red-300"
+                  }`}
+                >
+                  {submitStatus.message}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                {/* Hidden CSRF token field */}
+                <input type="hidden" name="csrfToken" value={csrfToken} />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-gray-300 mb-2">
@@ -177,9 +312,18 @@ const Contact = () => {
                     <input
                       type="text"
                       id="name"
-                      className="w-full px-4 py-2 bg-maxscale-light border border-maxscale-muted rounded-lg text-white focus:border-maxscale-accent focus:outline-none"
-                      required
+                      className={`w-full px-4 py-2 bg-maxscale-light border ${
+                        errors.name
+                          ? "border-red-500 focus:border-red-500"
+                          : "border-maxscale-muted focus:border-maxscale-accent"
+                      } rounded-lg text-white focus:outline-none`}
+                      {...register("name")}
                     />
+                    {errors.name && (
+                      <p className="mt-1 text-red-400 text-sm">
+                        {errors.name.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-gray-300 mb-2">
@@ -188,9 +332,18 @@ const Contact = () => {
                     <input
                       type="email"
                       id="email"
-                      className="w-full px-4 py-2 bg-maxscale-light border border-maxscale-muted rounded-lg text-white focus:border-maxscale-accent focus:outline-none"
-                      required
+                      className={`w-full px-4 py-2 bg-maxscale-light border ${
+                        errors.email
+                          ? "border-red-500 focus:border-red-500"
+                          : "border-maxscale-muted focus:border-maxscale-accent"
+                      } rounded-lg text-white focus:outline-none`}
+                      {...register("email")}
                     />
+                    {errors.email && (
+                      <p className="mt-1 text-red-400 text-sm">
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -202,6 +355,7 @@ const Contact = () => {
                     type="text"
                     id="company"
                     className="w-full px-4 py-2 bg-maxscale-light border border-maxscale-muted rounded-lg text-white focus:border-maxscale-accent focus:outline-none"
+                    {...register("company")}
                   />
                 </div>
 
@@ -212,8 +366,7 @@ const Contact = () => {
                   <select
                     id="service"
                     className="w-full px-4 py-2 bg-maxscale-light border border-maxscale-muted rounded-lg text-white focus:border-maxscale-accent focus:outline-none"
-                    value={selectedService}
-                    onChange={(e) => setSelectedService(e.target.value)}
+                    {...register("service")}
                   >
                     <option value="">Select a service</option>
                     <option value="website">
@@ -237,15 +390,27 @@ const Contact = () => {
                   <textarea
                     id="message"
                     rows={5}
-                    className="w-full px-4 py-2 bg-maxscale-light border border-maxscale-muted rounded-lg text-white focus:border-maxscale-accent focus:outline-none"
-                    required
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    className={`w-full px-4 py-2 bg-maxscale-light border ${
+                      errors.message
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-maxscale-muted focus:border-maxscale-accent"
+                    } rounded-lg text-white focus:outline-none`}
+                    {...register("message")}
                   ></textarea>
+                  {errors.message && (
+                    <p className="mt-1 text-red-400 text-sm">
+                      {errors.message.message}
+                    </p>
+                  )}
                 </div>
 
-                <MaxScaleButton type="submit" size="lg" className="w-full">
-                  Send Message
+                <MaxScaleButton
+                  type="submit"
+                  size="lg"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </MaxScaleButton>
               </form>
             </div>
