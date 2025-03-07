@@ -4,7 +4,7 @@ import crypto from "crypto";
 // Session configuration
 const SESSION_COOKIE_NAME = "maxscale_session";
 const SESSION_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
-const CSRF_COOKIE_NAME = "maxscale_csrf";
+export const CSRF_COOKIE_NAME = "maxscale_csrf";
 
 // Generate a secure random token
 const generateSecureToken = (length = 32): string => {
@@ -97,11 +97,23 @@ export const withSession = (handler: Handler): Handler => {
 
 // Verify CSRF token
 export const verifyCsrfToken = (event: any): boolean => {
-  const csrfToken = event.headers["x-csrf-token"];
-  const cookies = parseCookies(event.headers.cookie);
-  const cookieCsrfToken = cookies[CSRF_COOKIE_NAME];
+  try {
+    const csrfToken = event.headers["x-csrf-token"];
+    const cookies = parseCookies(event.headers.cookie || "");
+    const cookieCsrfToken = cookies[CSRF_COOKIE_NAME];
 
-  return csrfToken && cookieCsrfToken && csrfToken === cookieCsrfToken;
+    console.log("CSRF Verification:", {
+      tokenInHeader: !!csrfToken,
+      tokenInCookie: !!cookieCsrfToken,
+      headerMatch: csrfToken === cookieCsrfToken,
+    });
+
+    // Check if tokens exist and match
+    return csrfToken && cookieCsrfToken && csrfToken === cookieCsrfToken;
+  } catch (error) {
+    console.error("Error during CSRF verification:", error);
+    return false;
+  }
 };
 
 // Example usage:

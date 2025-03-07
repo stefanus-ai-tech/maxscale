@@ -1,13 +1,26 @@
 import { Handler } from "@netlify/functions";
 import dotenv from "dotenv";
 import { z } from "zod"; // Using zod for input validation
-import { withSession, verifyCsrfToken } from "./session-middleware";
+import {
+  withSession,
+  verifyCsrfToken,
+  parseCookies,
+  CSRF_COOKIE_NAME,
+} from "./session-middleware";
 import { Resend } from "resend"; // Import Resend
 
 // Load environment variables
 dotenv.config();
 console.log("Environment loaded");
 console.log("RESEND_API_KEY configured:", !!process.env.RESEND_API_KEY);
+console.log("Environment variables check:", {
+  SMTP_HOST: !!process.env.SMTP_HOST,
+  SMTP_PORT: !!process.env.SMTP_PORT,
+  SMTP_USER: !!process.env.SMTP_USER,
+  SMTP_PASS: !!process.env.SMTP_PASS ? "Set" : "Not set",
+  RESEND_API_KEY: !!process.env.RESEND_API_KEY ? "Set" : "Not set",
+  NODE_ENV: process.env.NODE_ENV || "not set",
+});
 
 // Email recipients - consider moving to environment variables
 const RECIPIENTS = ["stefanusaitech@gmail.com", "irfanwill.co@gmail.com"];
@@ -80,8 +93,28 @@ const emailHandler: Handler = async (event) => {
 
   try {
     // Check for CSRF token in headers
+    console.log("CSRF check:", {
+      csrfTokenHeader: event.headers["x-csrf-token"] || "Not present",
+      csrfCookiePresent: !!parseCookies(event.headers.cookie || "")[
+        CSRF_COOKIE_NAME
+      ],
+      headerNames: Object.keys(event.headers).join(", "),
+    });
+
     if (!verifyCsrfToken(event)) {
       console.error("CSRF token validation failed");
+      // Log the specific CSRF issue
+      const cookies = parseCookies(event.headers.cookie || "");
+      console.error("CSRF debug:", {
+        tokenInHeader: event.headers["x-csrf-token"],
+        tokenInCookie: cookies[CSRF_COOKIE_NAME],
+        headersCsrfKey: Object.keys(event.headers).find(
+          (key) => key.toLowerCase() === "x-csrf-token"
+        ),
+        cookieNames: Object.keys(cookies).join(", "),
+        rawCookieHeader: event.headers.cookie,
+      });
+
       return {
         statusCode: 403,
         headers,
@@ -153,18 +186,30 @@ const emailHandler: Handler = async (event) => {
     // Initialize Resend client
     const resend = new Resend(process.env.RESEND_API_KEY);
     console.log("Attempting to send email via Resend...");
+    console.log(
+      "Resend API key last 4 chars:",
+      process.env.RESEND_API_KEY
+        ? `...${process.env.RESEND_API_KEY.slice(-4)}`
+        : "Not available"
+    );
 
     // Send email using Resend
-    const { data, error } = await resend.emails.send({
-      from: "MaxScale Website <onboarding@resend.dev>", // Use Resend's default domain for testing
-      to: RECIPIENTS,
-      subject: `New Contact Form Submission from ${sanitizedName}`,
-      html: emailContent,
-      reply_to: email,
-    });
+    const { data, error } = await resend.emails
+      .send({
+        from: "MaxScale Website <onboarding@resend.dev>", // Use Resend's default domain for testing
+        to: RECIPIENTS,
+        subject: `New Contact Form Submission from ${sanitizedName}`,
+        html: emailContent,
+        replyTo: email,
+      })
+      .catch((err) => {
+        console.error("Resend API throw error:", err.message || err);
+        return { data: null, error: err };
+      });
 
     if (error) {
       console.error("Error sending email with Resend:", error);
+      console.error("Full error details:", JSON.stringify(error));
       return {
         statusCode: 500,
         headers,
@@ -182,11 +227,15 @@ const emailHandler: Handler = async (event) => {
       headers,
       body: JSON.stringify({
         message: "Email sent successfully",
-        messageId: data.id,
+        messageId: data?.id,
       }),
     };
   } catch (error) {
     console.error("Error sending email:", error);
+    console.error(
+      "Error stack:",
+      error instanceof Error ? error.stack : "No stack available"
+    );
 
     // Don't expose detailed error information to clients
     return {

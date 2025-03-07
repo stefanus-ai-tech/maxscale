@@ -95,11 +95,15 @@ const Contact = () => {
 
     try {
       console.log("Submitting form with CSRF token:", csrfToken);
+      console.log("Form data being submitted:", JSON.stringify(data));
+
       const response = await fetch("/api/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken,
+          // Add additional headers for debugging
+          "X-Debug-Client": "browser-form",
         },
         body: JSON.stringify(data),
         credentials: "same-origin", // Include cookies with the request
@@ -117,7 +121,9 @@ const Contact = () => {
       let responseData;
       try {
         responseData = await response.json();
+        console.log("Response data:", JSON.stringify(responseData));
       } catch (parseError) {
+        console.error("Failed to parse response:", parseError);
         responseData = { message: "Failed to parse server response" };
       }
 
@@ -135,13 +141,22 @@ const Contact = () => {
         setCsrfToken(newToken);
         sessionStorage.setItem("csrfToken", newToken);
       } else {
+        // Enhanced error handling with more details
+        const errorMessage =
+          responseData.message || "Something went wrong. Please try again.";
+        console.error("Server error:", {
+          status: response.status,
+          message: errorMessage,
+          details: responseData.error || "No additional details",
+        });
+
         setSubmitStatus({
           type: "error",
-          message:
-            responseData.message || "Something went wrong. Please try again.",
+          message: `Error (${response.status}): ${errorMessage}`,
         });
       }
     } catch (error) {
+      console.error("Network or client-side error:", error);
       setSubmitStatus({
         type: "error",
         message: "Network error. Please check your connection and try again.",
