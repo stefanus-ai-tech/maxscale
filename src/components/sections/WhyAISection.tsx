@@ -5,19 +5,47 @@ import { Link } from "react-router-dom";
 
 const WhyAISection = () => {
   useEffect(() => {
-    // Add CSP meta tag programmatically
+    console.log("--- CSP Diagnostic: WhyAISection useEffect starting ---");
+
+    // Check for existing CSP meta tags or headers
     const head = document.head;
     const existingCspMeta = document.querySelector(
       'meta[http-equiv="Content-Security-Policy"]'
     );
 
+    // Log all existing CSP meta tags in the document
+    const allMetaTags = document.querySelectorAll("meta");
+    console.log(
+      "All meta tags before our modifications:",
+      Array.from(allMetaTags).map((tag) => ({
+        httpEquiv: tag.httpEquiv,
+        content: tag.content,
+      }))
+    );
+
+    console.log("Existing CSP meta tag found:", existingCspMeta ? "Yes" : "No");
+    if (existingCspMeta) {
+      console.log(
+        "Existing CSP content:",
+        existingCspMeta.getAttribute("content")
+      );
+    }
+
+    // Try to detect CSP from headers if possible
+    if (performance && performance.getEntriesByType) {
+      const resources = performance.getEntriesByType("resource");
+      console.log("Resource entries that might contain CSP info:", resources);
+    }
+
     if (!existingCspMeta) {
+      console.log("Creating new CSP meta tag");
       const cspMeta = document.createElement("meta");
       cspMeta.httpEquiv = "Content-Security-Policy";
       // Updated CSP to properly allow YouTube iframes and related resources
       cspMeta.content =
         "default-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com; font-src 'self';";
       head.appendChild(cspMeta);
+      console.log("New CSP meta tag added to document head");
     }
 
     // Update Permissions-Policy header with current supported features
@@ -25,20 +53,46 @@ const WhyAISection = () => {
       'meta[http-equiv="Permissions-Policy"]'
     );
 
+    console.log(
+      "Existing Permissions-Policy meta tag found:",
+      permissionsPolicyMeta ? "Yes" : "No"
+    );
+    if (permissionsPolicyMeta) {
+      console.log(
+        "Existing Permissions-Policy content:",
+        permissionsPolicyMeta.getAttribute("content")
+      );
+    }
+
     if (!permissionsPolicyMeta) {
+      console.log("Creating new Permissions-Policy meta tag");
       const newPermissionsPolicyMeta = document.createElement("meta");
       newPermissionsPolicyMeta.httpEquiv = "Permissions-Policy";
       // Use currently supported features instead of deprecated interest-cohort
       newPermissionsPolicyMeta.content =
         "camera=(), microphone=(), geolocation=()";
       head.appendChild(newPermissionsPolicyMeta);
+      console.log("New Permissions-Policy meta tag added to document head");
     }
 
     // Log CSP meta tags
     const updatedCspMeta = document.querySelector(
       'meta[http-equiv="Content-Security-Policy"]'
     );
-    console.log("CSP Meta Tag:", updatedCspMeta?.getAttribute("content"));
+    console.log(
+      "Updated CSP Meta Tag:",
+      updatedCspMeta?.getAttribute("content")
+    );
+
+    // Log all meta tags after our modifications
+    const allMetaTagsAfter = document.querySelectorAll("meta");
+    console.log(
+      "All meta tags after our modifications:",
+      Array.from(allMetaTagsAfter).map((tag) => ({
+        httpEquiv: tag.httpEquiv,
+        content: tag.content,
+      }))
+    );
 
     // Check iframe feature support
     const iframe = document.createElement("iframe");
@@ -50,20 +104,45 @@ const WhyAISection = () => {
 
     // Test iframe loading
     const testIframeLoad = () => {
+      // Record the time before looking for the iframe
+      const startTime = performance.now();
+      console.log("Starting testIframeLoad at:", startTime);
+
       // Wait for iframe to be in the DOM
       setTimeout(() => {
         const iframe = document.querySelector("iframe");
+        const timeElapsed = performance.now() - startTime;
+        console.log(`Looking for iframe after ${timeElapsed}ms delay`);
+        console.log("Iframe found in DOM:", iframe ? "Yes" : "No");
+
         if (iframe) {
+          console.log("Iframe src:", iframe.src);
+          console.log("Iframe allow attribute:", iframe.allow);
+          console.log("Iframe allowFullscreen:", iframe.allowFullscreen);
+
           iframe.addEventListener("load", () => {
-            console.log("YouTube iframe loaded successfully");
+            const loadTime = performance.now() - startTime;
+            console.log(
+              `YouTube iframe loaded successfully after ${loadTime}ms`
+            );
           });
+
           iframe.addEventListener("error", (error) => {
-            console.error("YouTube iframe failed to load:", error);
+            const errorTime = performance.now() - startTime;
+            console.error(
+              `YouTube iframe failed to load after ${errorTime}ms:`,
+              error
+            );
           });
         }
       }, 1000);
     };
     testIframeLoad();
+
+    // Return cleanup function
+    return () => {
+      console.log("--- CSP Diagnostic: WhyAISection useEffect cleanup ---");
+    };
   }, []);
 
   const benefits = [
