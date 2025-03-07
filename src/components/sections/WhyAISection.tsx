@@ -88,9 +88,8 @@ const WhyAISection = () => {
                   <iframe
                     width="100%"
                     height="100%"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=8M_kcWrktzI03A9S"
+                    src="https://www.youtube.com/embed/ldekv-wx7lo?si=t1x1PxMsY9Su6AMn"
                     title="YouTube video player"
-                    frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen
