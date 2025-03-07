@@ -43,19 +43,32 @@ export const parseCookies = (
 // Session middleware for Netlify functions
 export const withSession = (handler: Handler): Handler => {
   return async (event, context) => {
+    console.log("withSession middleware starting");
+    console.log("Request headers:", JSON.stringify(event.headers));
+
     // Parse cookies from request
     const cookies = parseCookies(event.headers.cookie);
+    console.log("Parsed cookies:", JSON.stringify(cookies));
 
     // Check if session exists
     let sessionId = cookies[SESSION_COOKIE_NAME];
     let csrfToken = cookies[CSRF_COOKIE_NAME];
     let newSession = false;
 
+    console.log("Initial session state:", {
+      sessionIdExists: !!sessionId,
+      csrfTokenExists: !!csrfToken,
+    });
+
     // Create new session if none exists
     if (!sessionId) {
       sessionId = generateSecureToken();
       csrfToken = generateSecureToken();
       newSession = true;
+      console.log("Created new session:", {
+        sessionId: sessionId.substring(0, 8) + "...",
+        csrfToken: csrfToken.substring(0, 8) + "...",
+      });
     }
 
     // Add session info to event context for the handler
@@ -83,6 +96,12 @@ export const withSession = (handler: Handler): Handler => {
       const sessionCookie = createSessionCookie(sessionId);
       const csrfCookie = createCsrfCookie(csrfToken);
 
+      console.log("Setting new cookies in response:", {
+        sessionCookieSet: !!sessionCookie,
+        csrfCookieSet: !!csrfCookie,
+        csrfTokenValue: csrfToken.substring(0, 8) + "...",
+      });
+
       // Add to response using a custom header that our frontend will process
       handlerResponse.headers = {
         ...handlerResponse.headers,
@@ -91,6 +110,10 @@ export const withSession = (handler: Handler): Handler => {
       };
     }
 
+    console.log(
+      "Final response headers:",
+      JSON.stringify(handlerResponse.headers)
+    );
     return handlerResponse;
   };
 };
@@ -119,14 +142,30 @@ export const verifyCsrfToken = (event: any): boolean => {
       headerMatch: csrfToken === cookieCsrfToken,
     });
 
-    console.log("CSRF Verification:", {
-      tokenInHeader: !!csrfToken,
-      tokenInCookie: !!cookieCsrfToken,
-      headerMatch: csrfToken === cookieCsrfToken,
-    });
+    // Special case for the init-session endpoint
+    if (event.path === "/.netlify/functions/init-session") {
+      console.log("Skipping CSRF check for init-session endpoint");
+      return true;
+    }
 
     // Check if tokens exist and match
-    return csrfToken && cookieCsrfToken && csrfToken === cookieCsrfToken;
+    if (!csrfToken || !cookieCsrfToken) {
+      console.error("Missing CSRF token:", {
+        hasHeaderToken: !!csrfToken,
+        hasCookieToken: !!cookieCsrfToken,
+      });
+      return false;
+    }
+
+    const tokensMatch = csrfToken === cookieCsrfToken;
+    if (!tokensMatch) {
+      console.error("CSRF token mismatch:", {
+        headerToken: csrfToken.substring(0, 8) + "...",
+        cookieToken: cookieCsrfToken.substring(0, 8) + "...",
+      });
+    }
+
+    return tokensMatch;
   } catch (error) {
     console.error("Error during CSRF verification:", error);
     return false;

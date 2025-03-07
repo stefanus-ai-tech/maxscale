@@ -65,17 +65,38 @@ const Contact = () => {
     },
   });
 
-  // Generate CSRF token on component mount
+  // Initialize session and get CSRF token on component mount
   useEffect(() => {
-    // Generate a random token
-    const token =
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15);
-    setCsrfToken(token);
+    const initializeSession = async () => {
+      try {
+        // Make request to initialize session
+        const response = await fetch("/api/init-session", {
+          method: "GET",
+          credentials: "same-origin",
+        });
 
-    // Store token in sessionStorage
-    sessionStorage.setItem("csrfToken", token);
-    console.log("Generated new CSRF token:", token);
+        // Process any cookies from the response
+        setCookiesFromHeaders(response);
+
+        // Extract CSRF token from cookies
+        const cookies = document.cookie.split(";");
+        const csrfCookie = cookies.find((cookie) =>
+          cookie.trim().startsWith("maxscale_csrf=")
+        );
+
+        if (csrfCookie) {
+          const token = csrfCookie.split("=")[1].trim();
+          setCsrfToken(token);
+          console.log("Retrieved server-generated CSRF token");
+        } else {
+          console.error("No CSRF token found in cookies after initialization");
+        }
+      } catch (error) {
+        console.error("Failed to initialize session:", error);
+      }
+    };
+
+    initializeSession();
   }, []);
 
   // Check if user came from the consultation button on pricing page

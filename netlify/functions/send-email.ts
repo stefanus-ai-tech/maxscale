@@ -121,6 +121,15 @@ const emailHandler: Handler = async (event) => {
       csrfHeaderValue
     );
 
+    // Check for client-side generated token in sessionStorage
+    console.log("Client-side token check:", {
+      headerToken: csrfHeaderValue,
+      expectedFormat:
+        typeof csrfHeaderValue === "string" &&
+        /^[a-z0-9]{15,}$/.test(csrfHeaderValue),
+      length: csrfHeaderValue ? csrfHeaderValue.length : 0,
+    });
+
     if (!verifyCsrfToken(event)) {
       console.error("CSRF token validation failed");
       // Log the specific CSRF issue
