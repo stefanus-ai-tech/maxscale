@@ -1,9 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { DollarSign, Zap, LineChart } from "lucide-react";
 import MaxScaleButton from "../ui/MaxScaleButton";
 import { Link } from "react-router-dom";
 
 const WhyAISection = () => {
+  useEffect(() => {
+    // Log CSP meta tags if they exist
+    const cspMeta = document.querySelector(
+      'meta[http-equiv="Content-Security-Policy"]'
+    );
+    console.log("CSP Meta Tag:", cspMeta?.getAttribute("content"));
+
+    // Check iframe feature support
+    const iframe = document.createElement("iframe");
+    console.log("Supported iframe features:", {
+      webShare: "share" in navigator,
+      allowFullscreen: "allowFullscreen" in iframe,
+      allow: "allow" in iframe,
+    });
+
+    // Test iframe loading
+    const testIframeLoad = () => {
+      const iframe = document.querySelector("iframe");
+      iframe?.addEventListener("load", () => {
+        console.log("YouTube iframe loaded successfully");
+      });
+      iframe?.addEventListener("error", (error) => {
+        console.error("YouTube iframe failed to load:", error);
+      });
+    };
+    testIframeLoad();
+  }, []);
+
   const benefits = [
     {
       icon: DollarSign,
