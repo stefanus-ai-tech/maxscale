@@ -1,6 +1,9 @@
+
 import React, { useEffect, useRef } from 'react';
 import MaxScaleButton from '../ui/MaxScaleButton';
 import { ArrowRight, PlayCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 const HeroSection = () => {
   const heroRef = useRef<HTMLDivElement>(null);
 
@@ -18,7 +21,13 @@ const HeroSection = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  return <section id="home" className="relative min-h-screen flex items-center pt-20" ref={heroRef}>
+
+  const openRickRoll = () => {
+    window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+  };
+
+  return (
+    <section id="home" className="relative min-h-screen flex items-center pt-20" ref={heroRef}>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -left-40 w-96 h-96 bg-maxscale-accent/30 rounded-full filter blur-[120px] opacity-30 parallax"></div>
@@ -41,11 +50,13 @@ const HeroSection = () => {
               from website development to customer service and automation.
             </p>
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4 animate-fade-in opacity-0 [animation-delay:600ms]">
-              <MaxScaleButton size="lg" className="group">
-                Get Started 
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </MaxScaleButton>
-              <MaxScaleButton variant="outline" size="lg" className="group">
+              <Link to="/services">
+                <MaxScaleButton size="lg" className="group">
+                  Get Started 
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </MaxScaleButton>
+              </Link>
+              <MaxScaleButton variant="outline" size="lg" className="group" onClick={openRickRoll}>
                 <PlayCircle className="mr-2 h-5 w-5" />
                 Watch Demo
               </MaxScaleButton>
@@ -55,11 +66,23 @@ const HeroSection = () => {
           <div className="lg:w-1/2 animate-fade-in opacity-0 [animation-delay:800ms]">
             <div className="relative">
               <div className="absolute inset-0 bg-hero-glow"></div>
-              
+              <div className="glass-panel p-4 sm:p-6 relative overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1551434678-e076c223a692?fit=crop&w=800&h=600" 
+                  alt="MaxScale AI Dashboard" 
+                  className="w-full h-auto rounded-lg object-cover shadow-xl"
+                />
+                <div className="absolute bottom-8 left-8 right-8 glass-panel p-4 text-left">
+                  <h3 className="text-white font-medium mb-1">AI-Powered Dashboard</h3>
+                  <p className="text-gray-300 text-sm">Real-time analytics and insights for your business</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default HeroSection;

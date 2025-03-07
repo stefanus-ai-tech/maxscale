@@ -67,8 +67,8 @@ export default {
 					"dark": "#0F0F13",
 					"darker": "#090910",
 					"light": "#1A1A23",
-					"accent": "#E945A3",
-					"secondary": "#8A2BE2",
+					"accent": "#1EAEDB",
+					"secondary": "#0FA0CE",
 					"muted": "#2A2A35"
 				}
 			},
@@ -138,9 +138,9 @@ export default {
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-				'hero-pattern': 'linear-gradient(to bottom right, rgba(138, 43, 226, 0.2), rgba(233, 69, 163, 0.2))',
-				'hero-glow': 'radial-gradient(circle at center, rgba(233, 69, 163, 0.3) 0%, transparent 70%)',
-				'accent-gradient': 'linear-gradient(135deg, #E945A3, #8A2BE2)'
+				'hero-pattern': 'linear-gradient(to bottom right, rgba(14, 165, 233, 0.2), rgba(30, 174, 219, 0.2))',
+				'hero-glow': 'radial-gradient(circle at center, rgba(30, 174, 219, 0.3) 0%, transparent 70%)',
+				'accent-gradient': 'linear-gradient(135deg, #1EAEDB, #0FA0CE)'
 			}
 		}
 	},

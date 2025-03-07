@@ -1,5 +1,8 @@
+
 import React from 'react';
 import MaxScaleButton from '../ui/MaxScaleButton';
+import { Link } from 'react-router-dom';
+
 const ClientsSection = () => {
   const clients = [{
     name: 'TechCorp',
@@ -17,6 +20,7 @@ const ClientsSection = () => {
     name: 'DigitalPlus',
     logo: 'https://via.placeholder.com/150x50/2A2A35/FFFFFF?text=DigitalPlus'
   }];
+  
   const testimonials = [{
     quote: "MaxScale transformed our customer service operations. Our response times improved by 45% while reducing costs by 30%.",
     author: "Sarah Johnson",
@@ -28,7 +32,9 @@ const ClientsSection = () => {
     position: "Marketing Director, InnovatePro",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120&h=120"
   }];
-  return <section id="clients" className="section-padding bg-maxscale-darker relative">
+  
+  return (
+    <section id="clients" className="section-padding bg-maxscale-darker relative">
       <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-maxscale-dark to-transparent"></div>
       
       <div className="maxscale-container relative z-10">
@@ -47,15 +53,20 @@ const ClientsSection = () => {
         </div>
         
         <div className="flex flex-wrap justify-center items-center gap-8 mb-16 animate-fade-in opacity-0 [animation-delay:600ms]">
-          {clients.map((client, index) => <div key={index} className="flex items-center justify-center">
-              
-            </div>)}
+          {clients.map((client, index) => (
+            <div key={index} className="flex items-center justify-center">
+              <img src={client.logo} alt={client.name} className="h-12" />
+            </div>
+          ))}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {testimonials.map((testimonial, index) => <div key={index} className="glass-panel p-8 animate-fade-in opacity-0" style={{
-          animationDelay: `${800 + index * 200}ms`
-        }}>
+          {testimonials.map((testimonial, index) => (
+            <div 
+              key={index} 
+              className="glass-panel p-8 animate-fade-in opacity-0" 
+              style={{animationDelay: `${800 + index * 200}ms`}}
+            >
               <div className="flex flex-col h-full">
                 <div className="mb-6">
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,7 +82,8 @@ const ClientsSection = () => {
                   </div>
                 </div>
               </div>
-            </div>)}
+            </div>
+          ))}
         </div>
         
         <div className="glass-panel p-8 md:p-12 animate-fade-in opacity-0 [animation-delay:1200ms]">
@@ -84,11 +96,15 @@ const ClientsSection = () => {
               </p>
             </div>
             <div className="md:w-2/5 flex justify-center md:justify-end">
-              <MaxScaleButton size="lg">Schedule a Free Consultation</MaxScaleButton>
+              <Link to="/pricing">
+                <MaxScaleButton size="lg">Schedule a Free Consultation</MaxScaleButton>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default ClientsSection;

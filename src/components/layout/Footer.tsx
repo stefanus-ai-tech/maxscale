@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Facebook, Twitter, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -8,9 +9,9 @@ const Footer = () => {
       <div className="maxscale-container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
-            <a href="#" className="inline-block mb-4">
+            <Link to="/" className="inline-block mb-4">
               <span className="text-2xl font-bold text-gradient">MaxScale</span>
-            </a>
+            </Link>
             <p className="text-gray-400 mb-6">
               AI-driven agency dedicated to helping businesses scale efficiently and affordably.
             </p>
@@ -31,24 +32,24 @@ const Footer = () => {
             <h3 className="text-white font-semibold text-lg mb-4">Services</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-maxscale-accent transition-colors">
+                <Link to="/services#website" className="text-gray-400 hover:text-maxscale-accent transition-colors">
                   AI-Powered Website
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-maxscale-accent transition-colors">
+                <Link to="/services#customer-service" className="text-gray-400 hover:text-maxscale-accent transition-colors">
                   Customer Service Solutions
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-maxscale-accent transition-colors">
+                <Link to="/services#automation" className="text-gray-400 hover:text-maxscale-accent transition-colors">
                   Business Process Automation
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-maxscale-accent transition-colors">
+                <Link to="/services#scalable" className="text-gray-400 hover:text-maxscale-accent transition-colors">
                   Scalable AI Solutions
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -57,24 +58,24 @@ const Footer = () => {
             <h3 className="text-white font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-maxscale-accent transition-colors">
+                <Link to="/about" className="text-gray-400 hover:text-maxscale-accent transition-colors">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-maxscale-accent transition-colors">
+                <Link to="/case-studies" className="text-gray-400 hover:text-maxscale-accent transition-colors">
                   Case Studies
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-maxscale-accent transition-colors">
+                <Link to="/pricing" className="text-gray-400 hover:text-maxscale-accent transition-colors">
                   Pricing
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-maxscale-accent transition-colors">
+                <Link to="/blog" className="text-gray-400 hover:text-maxscale-accent transition-colors">
                   Blog
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

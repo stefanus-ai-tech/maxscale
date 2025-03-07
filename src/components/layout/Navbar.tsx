@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import MaxScaleButton from '../ui/MaxScaleButton';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,11 +23,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Why AI', href: '#why-ai' },
-    { name: 'Clients', href: '#clients' },
+    { name: 'Home', href: '/' },
+    { name: 'About', href: '/about' },
+    { name: 'Services', href: '/services' },
+    { name: 'Case Studies', href: '/case-studies' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Blog', href: '/blog' },
   ];
 
   return (
@@ -37,25 +39,27 @@ const Navbar = () => {
       )}
     >
       <div className="maxscale-container flex items-center justify-between">
-        <a href="#" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <span className="text-2xl font-bold text-gradient">MaxScale</span>
-        </a>
+        </Link>
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <ul className="flex space-x-6">
             {navLinks.map((link) => (
               <li key={link.name}>
-                <a 
-                  href={link.href} 
+                <Link 
+                  to={link.href} 
                   className="text-gray-300 hover:text-maxscale-accent transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-maxscale-accent after:transition-all"
                 >
                   {link.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <MaxScaleButton>Get Started</MaxScaleButton>
+          <Link to="/contact">
+            <MaxScaleButton>Get Started</MaxScaleButton>
+          </Link>
         </div>
         
         {/* Mobile Navigation Toggle */}
@@ -78,18 +82,20 @@ const Navbar = () => {
           <ul className="flex flex-col space-y-4">
             {navLinks.map((link) => (
               <li key={link.name} className="border-b border-maxscale-muted/30 pb-2">
-                <a 
-                  href={link.href} 
+                <Link 
+                  to={link.href} 
                   className="text-gray-300 hover:text-maxscale-accent transition-colors block py-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
           <div className="mt-6">
-            <MaxScaleButton className="w-full">Get Started</MaxScaleButton>
+            <Link to="/contact">
+              <MaxScaleButton className="w-full">Get Started</MaxScaleButton>
+            </Link>
           </div>
         </div>
       </div>

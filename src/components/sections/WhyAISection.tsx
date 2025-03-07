@@ -2,6 +2,7 @@
 import React from 'react';
 import { DollarSign, Zap, LineChart } from 'lucide-react';
 import MaxScaleButton from '../ui/MaxScaleButton';
+import { Link } from 'react-router-dom';
 
 const WhyAISection = () => {
   const benefits = [
@@ -9,21 +10,25 @@ const WhyAISection = () => {
       icon: DollarSign,
       title: "Cost Savings",
       description: "Businesses can cut costs significantly by automating workflows and reducing manual labor.",
-      color: "from-green-400 to-emerald-600"
+      color: "from-blue-400 to-cyan-600"
     },
     {
       icon: Zap,
       title: "Efficiency Boost",
       description: "AI reduces manual errors and enhances productivity across all business operations.",
-      color: "from-blue-400 to-indigo-600"
+      color: "from-blue-500 to-indigo-600"
     },
     {
       icon: LineChart,
       title: "Market Demand",
       description: "Companies are actively seeking AI solutions to stay competitive in the digital landscape.",
-      color: "from-purple-400 to-indigo-600"
+      color: "from-cyan-400 to-blue-600"
     }
   ];
+
+  const openRickRoll = () => {
+    window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+  };
 
   return (
     <section id="why-ai" className="py-20 relative">
@@ -65,11 +70,13 @@ const WhyAISection = () => {
               ))}
             </div>
             
-            <MaxScaleButton 
-              className="animate-fade-in opacity-0 [animation-delay:1050ms]"
-            >
-              Explore AI Solutions
-            </MaxScaleButton>
+            <Link to="/services">
+              <MaxScaleButton 
+                className="animate-fade-in opacity-0 [animation-delay:1050ms]"
+              >
+                Explore AI Solutions
+              </MaxScaleButton>
+            </Link>
           </div>
           
           <div className="lg:w-1/2 animate-fade-in opacity-0 [animation-delay:600ms]">
@@ -83,7 +90,10 @@ const WhyAISection = () => {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-maxscale-accent/90 flex items-center justify-center cursor-pointer hover:bg-maxscale-accent transition-colors">
+                    <div 
+                      className="w-16 h-16 rounded-full bg-maxscale-accent/90 flex items-center justify-center cursor-pointer hover:bg-maxscale-accent transition-colors"
+                      onClick={openRickRoll}
+                    >
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M8 5V19L19 12L8 5Z" fill="white"/>
                       </svg>

@@ -3,6 +3,7 @@ import React from 'react';
 import StatCard from '../ui/StatCard';
 import { Zap, TrendingUp, DollarSign } from 'lucide-react';
 import MaxScaleButton from '../ui/MaxScaleButton';
+import { Link } from 'react-router-dom';
 
 const AboutSection = () => {
   return (
@@ -31,21 +32,21 @@ const AboutSection = () => {
             percentage={38} 
             title="Average Cost Reduction" 
             description="Our clients achieve significant cost savings by implementing our AI solutions"
-            color="from-red-400 to-pink-600"
+            color="from-blue-400 to-cyan-600"
             className="md:col-span-1"
           />
           <StatCard 
             percentage={23} 
             title="Efficiency Increase" 
             description="Businesses experience measurable productivity improvements across operations"
-            color="from-blue-400 to-indigo-600"
+            color="from-blue-500 to-indigo-600"
             className="md:col-span-1"
           />
           <StatCard 
             percentage={19} 
             title="Revenue Growth" 
             description="Average revenue boost within 6 months of implementing MaxScale solutions"
-            color="from-green-400 to-teal-600"
+            color="from-cyan-400 to-blue-600"
             className="md:col-span-1"
           />
         </div>
@@ -73,7 +74,9 @@ const AboutSection = () => {
                   </li>
                 ))}
               </ul>
-              <MaxScaleButton>Learn More</MaxScaleButton>
+              <Link to="/about">
+                <MaxScaleButton>Learn More</MaxScaleButton>
+              </Link>
             </div>
             <div className="relative">
               <div className="absolute -inset-1 bg-accent-gradient rounded-xl opacity-30 blur-sm"></div>
