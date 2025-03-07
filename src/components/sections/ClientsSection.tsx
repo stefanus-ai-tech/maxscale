@@ -1,4 +1,3 @@
-
 import React from 'react';
 import MaxScaleButton from '../ui/MaxScaleButton';
 import { Link } from 'react-router-dom';
@@ -43,7 +42,7 @@ const ClientsSection = () => {
             Our Clients
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in opacity-0 [animation-delay:200ms]">
-            <span className="text-white">Trusted by </span>
+            <span className="text-white">Trusted by </span> 
             <span className="text-gradient">World-Class Companies</span>
           </h2>
           <p className="text-gray-300 text-lg animate-fade-in opacity-0 [animation-delay:400ms]">
@@ -96,7 +95,7 @@ const ClientsSection = () => {
               </p>
             </div>
             <div className="md:w-2/5 flex justify-center md:justify-end">
-              <Link to="/pricing">
+              <Link to="/pricing" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <MaxScaleButton size="lg">Schedule a Free Consultation</MaxScaleButton>
               </Link>
             </div>

@@ -61,7 +61,7 @@ const Navbar = () => {
       )}
     >
       <div className="maxscale-container flex items-center justify-between">
-        <Link to="/" className="flex items-center">
+        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center">
           <span className="text-2xl font-bold text-gradient">MaxScale</span>
         </Link>
         
@@ -73,13 +73,14 @@ const Navbar = () => {
                 <Link 
                   to={link.href} 
                   className="text-gray-300 hover:text-blue-400 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-blue-400 after:transition-all"
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   {link.name}
                 </Link>
               </li>
             ))}
           </ul>
-          <Link to="/contact">
+          <Link to="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <MaxScaleButton>Get Started</MaxScaleButton>
           </Link>
         </div>
@@ -107,7 +108,10 @@ const Navbar = () => {
                 <Link 
                   to={link.href} 
                   className="text-gray-300 hover:text-blue-400 transition-colors block py-2"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 >
                   {link.name}
                 </Link>
@@ -115,7 +119,13 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="mt-6">
-            <Link to="/contact">
+            <Link 
+              to="/contact"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
               <MaxScaleButton className="w-full">Get Started</MaxScaleButton>
             </Link>
           </div>

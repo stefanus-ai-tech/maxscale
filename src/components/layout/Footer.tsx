@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Facebook, Twitter, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -26,7 +27,7 @@ const Footer = () => {
         behavior: 'smooth'
       });
     }
-    // Otherwise, let the Router handle the navigation normally
+    // For different pages, we'll scroll to top in the useEffect of each page component
   };
 
   return (
@@ -102,7 +103,7 @@ const Footer = () => {
                 <Link 
                   to="/about" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/about')}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   About Us
                 </Link>
@@ -111,7 +112,7 @@ const Footer = () => {
                 <Link 
                   to="/case-studies" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/case-studies')}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   Case Studies
                 </Link>
@@ -120,7 +121,7 @@ const Footer = () => {
                 <Link 
                   to="/pricing" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/pricing')}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   Pricing
                 </Link>
@@ -129,7 +130,7 @@ const Footer = () => {
                 <Link 
                   to="/blog" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/blog')}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   Blog
                 </Link>
@@ -138,7 +139,7 @@ const Footer = () => {
                 <Link 
                   to="/learn-more" 
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/learn-more')}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   Learn More
                 </Link>

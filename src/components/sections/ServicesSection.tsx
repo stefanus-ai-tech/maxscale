@@ -67,7 +67,11 @@ const ServicesSection = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {services.map((service, index) => (
-            <Link key={index} to={service.link}>
+            <Link 
+              key={index} 
+              to={service.link}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               <ServiceCard
                 icon={service.icon}
                 title={service.title}
@@ -80,7 +84,7 @@ const ServicesSection = () => {
         </div>
         
         <div className="text-center animate-fade-in opacity-0 [animation-delay:1000ms]">
-          <Link to="/services">
+          <Link to="/services" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <MaxScaleButton variant="outline" size="lg">
               View All Services
             </MaxScaleButton>

@@ -74,7 +74,7 @@ const AboutSection = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/about">
+              <Link to="/about" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <MaxScaleButton>Learn More</MaxScaleButton>
               </Link>
             </div>

@@ -1,11 +1,16 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import MaxScaleButton from '@/components/ui/MaxScaleButton';
 import { Link } from 'react-router-dom';
 
 const Blog = () => {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const blogPosts = [
     {
       id: "ai-customer-service",
@@ -84,7 +89,7 @@ const Blog = () => {
                   
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400 text-sm">{post.readTime}</span>
-                    <Link to={`/blog/${post.id}`}>
+                    <Link to={`/blog/${post.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                       <MaxScaleButton variant="ghost" className="text-maxscale-accent">
                         Read More
                       </MaxScaleButton>
@@ -96,7 +101,7 @@ const Blog = () => {
           </div>
           
           <div className="text-center">
-            <Link to="/blog/all">
+            <Link to="/blog/all" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <MaxScaleButton size="lg">View All Articles</MaxScaleButton>
             </Link>
           </div>

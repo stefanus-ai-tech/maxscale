@@ -48,7 +48,7 @@ const HeroSection = () => {
               from website development to customer service and automation.
             </p>
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4 animate-fade-in opacity-0 [animation-delay:600ms]">
-              <Link to="/contact">
+              <Link to="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <MaxScaleButton size="lg" className="group">
                   Get Started 
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
