@@ -1,30 +1,24 @@
-
 import React, { useEffect, useRef } from 'react';
 import MaxScaleButton from '../ui/MaxScaleButton';
 import { ArrowRight, PlayCircle } from 'lucide-react';
-
 const HeroSection = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-  
+
   // Simple parallax effect on scroll
   useEffect(() => {
     const handleScroll = () => {
       if (!heroRef.current) return;
       const scrollY = window.scrollY;
       const heroElements = heroRef.current.querySelectorAll('.parallax');
-      
       heroElements.forEach((element, index) => {
         const speed = (index + 1) * 0.05;
         (element as HTMLElement).style.transform = `translateY(${scrollY * speed}px)`;
       });
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  return (
-    <section id="home" className="relative min-h-screen flex items-center pt-20" ref={heroRef}>
+  return <section id="home" className="relative min-h-screen flex items-center pt-20" ref={heroRef}>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -left-40 w-96 h-96 bg-maxscale-accent/30 rounded-full filter blur-[120px] opacity-30 parallax"></div>
@@ -61,23 +55,11 @@ const HeroSection = () => {
           <div className="lg:w-1/2 animate-fade-in opacity-0 [animation-delay:800ms]">
             <div className="relative">
               <div className="absolute inset-0 bg-hero-glow"></div>
-              <div className="glass-panel p-4 sm:p-6 relative overflow-hidden">
-                <img 
-                  src="/lovable-uploads/50855465-6e7d-4e13-80d7-ee26434fc852.png" 
-                  alt="MaxScale AI Dashboard" 
-                  className="w-full h-auto rounded-lg object-cover shadow-xl"
-                />
-                <div className="absolute bottom-8 left-8 right-8 glass-panel p-4 text-left">
-                  <h3 className="text-white font-medium mb-1">AI-Powered Dashboard</h3>
-                  <p className="text-gray-300 text-sm">Real-time analytics and insights for your business</p>
-                </div>
-              </div>
+              
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
