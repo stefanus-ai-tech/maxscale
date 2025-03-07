@@ -1,14 +1,13 @@
 import { Handler } from "@netlify/functions";
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { z } from "zod"; // Using zod for input validation
 import { withSession, verifyCsrfToken } from "./session-middleware";
+import { Resend } from "resend"; // Import Resend
 
 // Load environment variables
 dotenv.config();
-console.log("Environment loaded. SMTP_HOST:", process.env.SMTP_HOST);
-console.log("SMTP_USER configured:", !!process.env.SMTP_USER);
-console.log("SMTP_PASS configured:", !!process.env.SMTP_PASS);
+console.log("Environment loaded");
+console.log("RESEND_API_KEY configured:", !!process.env.RESEND_API_KEY);
 
 // Email recipients - consider moving to environment variables
 const RECIPIENTS = ["stefanusaitech@gmail.com", "irfanwill.co@gmail.com"];
@@ -133,31 +132,6 @@ const emailHandler: Handler = async (event) => {
 
     const { name, email, company, service, message } = validationResult.data;
 
-    // Create a transporter using environment variables
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "587"),
-      secure: process.env.SMTP_SECURE === "true",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-
-    // Verify SMTP connection
-    try {
-      await transporter.verify();
-    } catch (verifyError) {
-      console.error("SMTP verification failed:", verifyError);
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({
-          message: "Failed to connect to email server",
-        }),
-      };
-    }
-
     // Sanitize all user inputs before using in HTML
     const sanitizedName = sanitizeHtml(name);
     const sanitizedEmail = sanitizeHtml(email);
@@ -176,21 +150,39 @@ const emailHandler: Handler = async (event) => {
       <p>${sanitizedMessage}</p>
     `;
 
-    // Send email to all recipients
-    const info = await transporter.sendMail({
-      from: `"MaxScale Website" <${process.env.SMTP_USER}>`,
-      to: RECIPIENTS.join(", "),
+    // Initialize Resend client
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    console.log("Attempting to send email via Resend...");
+
+    // Send email using Resend
+    const { data, error } = await resend.emails.send({
+      from: "MaxScale Website <onboarding@resend.dev>", // Use Resend's default domain for testing
+      to: RECIPIENTS,
       subject: `New Contact Form Submission from ${sanitizedName}`,
       html: emailContent,
-      replyTo: email,
+      reply_to: email,
     });
 
+    if (error) {
+      console.error("Error sending email with Resend:", error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          message: "Failed to send email",
+          error:
+            process.env.NODE_ENV === "development" ? error.message : undefined,
+        }),
+      };
+    }
+
+    console.log("Email sent successfully with Resend:", data);
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         message: "Email sent successfully",
-        messageId: info.messageId,
+        messageId: data.id,
       }),
     };
   } catch (error) {

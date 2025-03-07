@@ -75,6 +75,7 @@ const Contact = () => {
 
     // Store token in sessionStorage
     sessionStorage.setItem("csrfToken", token);
+    console.log("Generated new CSRF token:", token);
   }, []);
 
   // Check if user came from the consultation button on pricing page
@@ -93,6 +94,7 @@ const Contact = () => {
     setSubmitStatus({ type: null, message: "" });
 
     try {
+      console.log("Submitting form with CSRF token:", csrfToken);
       const response = await fetch("/api/send-email", {
         method: "POST",
         headers: {
@@ -102,6 +104,12 @@ const Contact = () => {
         body: JSON.stringify(data),
         credentials: "same-origin", // Include cookies with the request
       });
+
+      console.log("Response status:", response.status);
+      console.log(
+        "Response headers:",
+        Object.fromEntries([...response.headers.entries()])
+      );
 
       // Handle custom cookie headers
       setCookiesFromHeaders(response);
