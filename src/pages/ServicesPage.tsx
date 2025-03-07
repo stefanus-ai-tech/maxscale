@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Globe, MessageSquare, Settings, LineChart, ArrowRight, Check } from 'lucide-react';
 import MaxScaleButton from '@/components/ui/MaxScaleButton';
+import { Link } from 'react-router-dom';
 
 const ServicesPage = () => {
   const services = [
@@ -96,33 +97,35 @@ const ServicesPage = () => {
                       <div className="w-12 h-12 rounded-lg bg-accent-gradient flex items-center justify-center">
                         <service.icon className="w-6 h-6 text-white" />
                       </div>
-                      <span className="text-sm font-semibold px-3 py-1 rounded-full bg-maxscale-muted text-maxscale-accent">
+                      <span className="text-sm font-semibold px-3 py-1 rounded-full bg-maxscale-muted text-blue-400">
                         Service
                       </span>
                     </div>
                     
                     <h2 className="text-3xl font-bold text-white mb-3">{service.title}</h2>
-                    <p className="text-xl text-maxscale-accent mb-6">{service.subtitle}</p>
+                    <p className="text-xl text-blue-400 mb-6">{service.subtitle}</p>
                     <p className="text-gray-300 mb-8">{service.description}</p>
                     
                     <div className="space-y-3 mb-8">
                       <h3 className="text-white font-semibold mb-2">Key Benefits:</h3>
                       {service.benefits.map((benefit, i) => (
                         <div key={i} className="flex items-start">
-                          <Check className="text-maxscale-accent mr-3 mt-1" size={18} />
+                          <Check className="text-blue-400 mr-3 mt-1" size={18} />
                           <span className="text-gray-300">{benefit}</span>
                         </div>
                       ))}
                     </div>
                     
-                    <MaxScaleButton className="group">
-                      Learn More
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </MaxScaleButton>
+                    <Link to="/learn-more">
+                      <MaxScaleButton className="group">
+                        Learn More
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </MaxScaleButton>
+                    </Link>
                   </div>
                   
                   <div className={`relative ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                    <div className="absolute -inset-4 bg-accent-gradient rounded-2xl opacity-20 blur-xl"></div>
+                    <div className="absolute -inset-4 bg-blue-500/20 rounded-2xl opacity-20 blur-xl"></div>
                     <div className="glass-panel p-4 relative">
                       <img 
                         src={service.image} 
@@ -146,7 +149,9 @@ const ServicesPage = () => {
                 </p>
               </div>
               <div className="md:w-2/5 flex justify-center md:justify-end">
-                <MaxScaleButton size="lg">Schedule a Free Consultation</MaxScaleButton>
+                <Link to="/contact">
+                  <MaxScaleButton size="lg">Schedule a Free Consultation</MaxScaleButton>
+                </Link>
               </div>
             </div>
           </div>

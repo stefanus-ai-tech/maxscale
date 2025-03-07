@@ -7,33 +7,55 @@ import AboutSection from '@/components/sections/AboutSection';
 import ServicesSection from '@/components/sections/ServicesSection';
 import WhyAISection from '@/components/sections/WhyAISection';
 import ClientsSection from '@/components/sections/ClientsSection';
+import { useLocation } from 'react-router-dom';
 
 const Index = () => {
+  const location = useLocation();
+
+  // Scroll to hash on load if present
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.substring(1);
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          window.scrollTo({
+            top: element.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
+
   // Add smooth scrolling for anchor links
   useEffect(() => {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a[href^="#"]');
+      
+      if (anchor) {
         e.preventDefault();
         
-        const targetId = this.getAttribute('href')?.substring(1);
+        const targetId = anchor.getAttribute('href')?.substring(1);
         if (!targetId) return;
         
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
           window.scrollTo({
-            top: targetElement.offsetTop - 80, // Adjust for navbar height
+            top: targetElement.offsetTop - 100, // Adjust for navbar height
             behavior: 'smooth'
           });
         }
-      });
-    });
+      }
+    };
+    
+    document.addEventListener('click', handleAnchorClick);
     
     return () => {
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.removeEventListener('click', function (e) {
-          // Cleanup
-        });
-      });
+      document.removeEventListener('click', handleAnchorClick);
     };
   }, []);
 

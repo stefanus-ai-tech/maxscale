@@ -1,11 +1,13 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MaxScaleButton from '../ui/MaxScaleButton';
 import { ArrowRight, PlayCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import VideoModal from '../ui/VideoModal';
 
 const HeroSection = () => {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   // Simple parallax effect on scroll
   useEffect(() => {
@@ -22,22 +24,18 @@ const HeroSection = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const openRickRoll = () => {
-    window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
-  };
-
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-20" ref={heroRef}>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -left-40 w-96 h-96 bg-maxscale-accent/30 rounded-full filter blur-[120px] opacity-30 parallax"></div>
-        <div className="absolute bottom-1/3 -right-40 w-96 h-96 bg-maxscale-secondary/30 rounded-full filter blur-[120px] opacity-30 parallax"></div>
+        <div className="absolute top-1/4 -left-40 w-96 h-96 bg-blue-500/30 rounded-full filter blur-[120px] opacity-30 parallax"></div>
+        <div className="absolute bottom-1/3 -right-40 w-96 h-96 bg-blue-400/30 rounded-full filter blur-[120px] opacity-30 parallax"></div>
       </div>
       
       <div className="maxscale-container relative z-10">
         <div className="flex flex-col lg:flex-row items-center">
           <div className="lg:w-1/2 text-center lg:text-left mb-12 lg:mb-0">
-            <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-maxscale-muted text-maxscale-accent mb-4 animate-fade-in opacity-0">
+            <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-maxscale-muted text-blue-400 mb-4 animate-fade-in opacity-0">
               AI-Powered Business Growth
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in opacity-0 [animation-delay:200ms]">
@@ -50,13 +48,18 @@ const HeroSection = () => {
               from website development to customer service and automation.
             </p>
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4 animate-fade-in opacity-0 [animation-delay:600ms]">
-              <Link to="/services">
+              <Link to="/contact">
                 <MaxScaleButton size="lg" className="group">
                   Get Started 
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </MaxScaleButton>
               </Link>
-              <MaxScaleButton variant="outline" size="lg" className="group" onClick={openRickRoll}>
+              <MaxScaleButton 
+                variant="outline" 
+                size="lg" 
+                className="group" 
+                onClick={() => setVideoModalOpen(true)}
+              >
                 <PlayCircle className="mr-2 h-5 w-5" />
                 Watch Demo
               </MaxScaleButton>
@@ -81,6 +84,13 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Video Modal */}
+      <VideoModal 
+        isOpen={videoModalOpen} 
+        onClose={() => setVideoModalOpen(false)}
+        videoId="dQw4w9WgXcQ"
+      />
     </section>
   );
 };

@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import MaxScaleButton from '../ui/MaxScaleButton';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +22,27 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const handleHashLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    // Only handle hash links for internal page sections
+    if (location.pathname === '/services' && hash.startsWith('#')) {
+      e.preventDefault();
+      const targetId = hash.substring(1);
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        window.scrollTo({
+          top: targetElement.offsetTop - 100, // Adjust for navbar height
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -50,7 +72,7 @@ const Navbar = () => {
               <li key={link.name}>
                 <Link 
                   to={link.href} 
-                  className="text-gray-300 hover:text-maxscale-accent transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-maxscale-accent after:transition-all"
+                  className="text-gray-300 hover:text-blue-400 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-blue-400 after:transition-all"
                 >
                   {link.name}
                 </Link>
@@ -84,7 +106,7 @@ const Navbar = () => {
               <li key={link.name} className="border-b border-maxscale-muted/30 pb-2">
                 <Link 
                   to={link.href} 
-                  className="text-gray-300 hover:text-maxscale-accent transition-colors block py-2"
+                  className="text-gray-300 hover:text-blue-400 transition-colors block py-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
