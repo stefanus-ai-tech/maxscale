@@ -22,8 +22,8 @@ console.log("Environment variables check:", {
   NODE_ENV: process.env.NODE_ENV || "not set",
 });
 
-// Email recipients - consider moving to environment variables
-const RECIPIENTS = ["stefanusaitech@gmail.com", "irfanwill.co@gmail.com"];
+// Email recipients - moved to environment variables
+const RECIPIENTS = process.env.RECIPIENTS;
 
 // Define validation schema for input data
 const ContactFormSchema = z.object({
@@ -226,7 +226,7 @@ const emailHandler: Handler = async (event) => {
     const { data, error } = await resend.emails
       .send({
         from: "MaxScale Website <onboarding@resend.dev>", // Use Resend's default domain for testing
-        to: RECIPIENTS,
+        to: RECIPIENTS ? RECIPIENTS.split(",") : [], // Split into an array
         subject: `New Contact Form Submission from ${sanitizedName}`,
         html: emailContent,
         replyTo: email,

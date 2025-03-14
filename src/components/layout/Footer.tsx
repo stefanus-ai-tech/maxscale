@@ -1,22 +1,25 @@
-
-import React from 'react';
-import { Facebook, Twitter, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import React from "react";
+import { Facebook, Twitter, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
   const location = useLocation();
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, targetPath: string, hash?: string) => {
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    targetPath: string,
+    hash?: string
+  ) => {
     // If we're already on the target page and there's a hash, smooth scroll to it
     if (location.pathname === targetPath && hash) {
       e.preventDefault();
       const targetId = hash.substring(1);
       const targetElement = document.getElementById(targetId);
-      
+
       if (targetElement) {
         window.scrollTo({
           top: targetElement.offsetTop - 100, // Adjust for navbar height
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       }
     } else if (location.pathname === targetPath) {
@@ -24,7 +27,7 @@ const Footer = () => {
       e.preventDefault();
       window.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
     // For different pages, we'll scroll to top in the useEffect of each page component
@@ -35,13 +38,18 @@ const Footer = () => {
       <div className="maxscale-container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
-            <Link to="/" className="inline-block mb-4" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <Link
+              to="/"
+              className="inline-block mb-4"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
               <span className="text-2xl font-bold text-gradient">MaxScale</span>
             </Link>
             <p className="text-gray-400 mb-6">
-              AI-driven agency dedicated to helping businesses scale efficiently and affordably.
+              AI-driven agency dedicated to helping businesses scale efficiently
+              and affordably.
             </p>
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
                 <Facebook size={20} />
               </a>
@@ -51,44 +59,48 @@ const Footer = () => {
               <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
                 <Linkedin size={20} />
               </a>
-            </div>
+            </div> */}
           </div>
 
           <div className="col-span-1">
             <h3 className="text-white font-semibold text-lg mb-4">Services</h3>
             <ul className="space-y-3">
               <li>
-                <Link 
-                  to="/services#website" 
+                <Link
+                  to="/services#website"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/services', '#website')}
+                  onClick={(e) => handleLinkClick(e, "/services", "#website")}
                 >
                   AI-Powered Website
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/services#customer-service" 
+                <Link
+                  to="/services#customer-service"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/services', '#customer-service')}
+                  onClick={(e) =>
+                    handleLinkClick(e, "/services", "#customer-service")
+                  }
                 >
                   Customer Service Solutions
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/services#automation" 
+                <Link
+                  to="/services#automation"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/services', '#automation')}
+                  onClick={(e) =>
+                    handleLinkClick(e, "/services", "#automation")
+                  }
                 >
                   Business Process Automation
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/services#scalable" 
+                <Link
+                  to="/services#scalable"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={(e) => handleLinkClick(e, '/services', '#scalable')}
+                  onClick={(e) => handleLinkClick(e, "/services", "#scalable")}
                 >
                   Scalable AI Solutions
                 </Link>
@@ -97,49 +109,61 @@ const Footer = () => {
           </div>
 
           <div className="col-span-1">
-            <h3 className="text-white font-semibold text-lg mb-4">Quick Links</h3>
+            <h3 className="text-white font-semibold text-lg mb-4">
+              Quick Links
+            </h3>
             <ul className="space-y-3">
               <li>
-                <Link 
-                  to="/about" 
+                <Link
+                  to="/about"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/case-studies" 
+                <Link
+                  to="/case-studies"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   Case Studies
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/pricing" 
+                <Link
+                  to="/pricing"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/blog" 
+                <Link
+                  to="/blog"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   Blog
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/learn-more" 
+                <Link
+                  to="/learn-more"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   Learn More
                 </Link>
@@ -148,7 +172,9 @@ const Footer = () => {
           </div>
 
           <div className="col-span-1">
-            <h3 className="text-white font-semibold text-lg mb-4">Contact Us</h3>
+            <h3 className="text-white font-semibold text-lg mb-4">
+              Contact Us
+            </h3>
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin size={20} className="text-blue-400 mr-3 mt-1" />

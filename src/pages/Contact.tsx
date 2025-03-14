@@ -47,6 +47,36 @@ const Contact = () => {
   }>({ type: null, message: "" });
   const [csrfToken, setCsrfToken] = useState("");
 
+  // Initialize session and get CSRF token on component mount
+  const initializeSession = async () => {
+    try {
+      // Make request to initialize session
+      const response = await fetch("/api/init-session", {
+        method: "GET",
+        credentials: "same-origin",
+      });
+
+      // Process any cookies from the response
+      setCookiesFromHeaders(response);
+
+      // Extract CSRF token from cookies
+      const cookies = document.cookie.split(";");
+      const csrfCookie = cookies.find((cookie) =>
+        cookie.trim().startsWith("maxscale_csrf=")
+      );
+
+      if (csrfCookie) {
+        const token = csrfCookie.split("=")[1].trim();
+        setCsrfToken(token);
+        console.log("Retrieved server-generated CSRF token");
+      } else {
+        console.error("No CSRF token found in cookies after initialization");
+      }
+    } catch (error) {
+      console.error("Failed to initialize session:", error);
+    }
+  };
+
   // Initialize form with react-hook-form and zod validation
   const {
     register,
@@ -65,37 +95,7 @@ const Contact = () => {
     },
   });
 
-  // Initialize session and get CSRF token on component mount
   useEffect(() => {
-    const initializeSession = async () => {
-      try {
-        // Make request to initialize session
-        const response = await fetch("/api/init-session", {
-          method: "GET",
-          credentials: "same-origin",
-        });
-
-        // Process any cookies from the response
-        setCookiesFromHeaders(response);
-
-        // Extract CSRF token from cookies
-        const cookies = document.cookie.split(";");
-        const csrfCookie = cookies.find((cookie) =>
-          cookie.trim().startsWith("maxscale_csrf=")
-        );
-
-        if (csrfCookie) {
-          const token = csrfCookie.split("=")[1].trim();
-          setCsrfToken(token);
-          console.log("Retrieved server-generated CSRF token");
-        } else {
-          console.error("No CSRF token found in cookies after initialization");
-        }
-      } catch (error) {
-        console.error("Failed to initialize session:", error);
-      }
-    };
-
     initializeSession();
   }, []);
 
@@ -155,12 +155,8 @@ const Contact = () => {
         });
         // Reset form
         reset();
-        // Generate new CSRF token after successful submission
-        const newToken =
-          Math.random().toString(36).substring(2, 15) +
-          Math.random().toString(36).substring(2, 15);
-        setCsrfToken(newToken);
-        sessionStorage.setItem("csrfToken", newToken);
+        // Get a new CSRF token from the server after successful submission
+        initializeSession();
       } else {
         // Enhanced error handling with more details
         const errorMessage =
@@ -264,7 +260,7 @@ const Contact = () => {
                 </div>
               </div>
 
-              <div className="bg-maxscale-muted p-6 rounded-lg">
+              {/* <div className="bg-maxscale-muted p-6 rounded-lg">
                 <h3 className="text-white font-semibold mb-3">Follow Us</h3>
                 <div className="flex space-x-4">
                   <a
@@ -324,7 +320,7 @@ const Contact = () => {
                     </svg>
                   </a>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="glass-panel p-8">

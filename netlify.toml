@@ -7,6 +7,7 @@
   command = "npm run dev"
   functions = "netlify/functions"
   publish = "dist"
+  targetPort = 8080
 
 # API requests redirect
 [[redirects]]
@@ -37,4 +38,6 @@
   from = "http://*"
   to = "https://:splat"
   status = 301
-  force = true 
+  force = true
+
+

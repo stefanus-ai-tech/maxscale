@@ -225,20 +225,7 @@ const WhyAISection = () => {
             <div className="relative">
               <div className="absolute -inset-4 bg-accent-gradient rounded-2xl opacity-20 blur-xl animate-pulse-slow"></div>
               <div className="glass-panel p-6 relative">
-                <div className="aspect-video rounded-lg overflow-hidden mb-6 relative">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src="https://www.youtube.com/embed/ldekv-wx7lo"
-                    title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                  {/* 
-                    Note: This iframe requires the following CSP directives to be set in your server configuration:
-                    Content-Security-Policy: default-src 'self'; frame-src 'self' https://www.youtube.com
-                  */}
-                </div>
+
 
                 <h3 className="text-2xl font-bold mb-4 text-white">
                   See AI in Action
