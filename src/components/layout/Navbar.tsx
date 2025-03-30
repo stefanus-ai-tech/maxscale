@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect } from 'react';
-import MaxScaleButton from '../ui/MaxScaleButton';
-import { Menu, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import MaxScaleButton from "../ui/MaxScaleButton";
+import { Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,8 +18,8 @@ const Navbar = () => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Close mobile menu when route changes
@@ -28,89 +27,106 @@ const Navbar = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const handleHashLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+  const handleHashLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    hash: string
+  ) => {
     // Only handle hash links for internal page sections
-    if (location.pathname === '/services' && hash.startsWith('#')) {
+    if (location.pathname === "/services" && hash.startsWith("#")) {
       e.preventDefault();
       const targetId = hash.substring(1);
       const targetElement = document.getElementById(targetId);
-      
+
       if (targetElement) {
         window.scrollTo({
           top: targetElement.offsetTop - 100, // Adjust for navbar height
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       }
     }
   };
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
-    { name: 'Services', href: '/services' },
-    { name: 'Case Studies', href: '/case-studies' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Blog', href: '/blog' },
+    { name: "Home", href: "/" },
+    // { name: 'About', href: '/about' },
+    { name: "Services", href: "/services" },
+    { name: "Case Studies", href: "/case-studies" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "Blog", href: "/blog" },
   ];
 
   return (
-    <nav 
+    <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4',
-        isScrolled ? 'bg-maxscale-darker/80 backdrop-blur-lg shadow-lg' : 'bg-transparent'
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4",
+        isScrolled
+          ? "bg-maxscale-darker/80 backdrop-blur-lg shadow-lg"
+          : "bg-transparent"
       )}
     >
       <div className="maxscale-container flex items-center justify-between">
-        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center">
+        <Link
+          to="/"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="flex items-center"
+        >
           <span className="text-2xl font-bold text-gradient">MaxScale</span>
         </Link>
-        
+
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <ul className="flex space-x-6">
             {navLinks.map((link) => (
               <li key={link.name}>
-                <Link 
-                  to={link.href} 
+                <Link
+                  to={link.href}
                   className="text-gray-300 hover:text-blue-400 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-blue-400 after:transition-all"
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   {link.name}
                 </Link>
               </li>
             ))}
           </ul>
-          <Link to="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <Link
+            to="/contact"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
             <MaxScaleButton>Get Started</MaxScaleButton>
           </Link>
         </div>
-        
+
         {/* Mobile Navigation Toggle */}
-        <button 
+        <button
           className="md:hidden text-white"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
-      
+
       {/* Mobile Navigation Menu */}
-      <div 
+      <div
         className={cn(
-          'fixed inset-x-0 top-[73px] bg-maxscale-darker/95 backdrop-blur-lg transition-all duration-300 ease-in-out md:hidden overflow-hidden',
-          mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+          "fixed inset-x-0 top-[73px] bg-maxscale-darker/95 backdrop-blur-lg transition-all duration-300 ease-in-out md:hidden overflow-hidden",
+          mobileMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         )}
       >
         <div className="maxscale-container py-4">
           <ul className="flex flex-col space-y-4">
             {navLinks.map((link) => (
-              <li key={link.name} className="border-b border-maxscale-muted/30 pb-2">
-                <Link 
-                  to={link.href} 
+              <li
+                key={link.name}
+                className="border-b border-maxscale-muted/30 pb-2"
+              >
+                <Link
+                  to={link.href}
                   className="text-gray-300 hover:text-blue-400 transition-colors block py-2"
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
                   {link.name}
@@ -119,11 +135,11 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="mt-6">
-            <Link 
+            <Link
               to="/contact"
               onClick={() => {
                 setMobileMenuOpen(false);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
               <MaxScaleButton className="w-full">Get Started</MaxScaleButton>

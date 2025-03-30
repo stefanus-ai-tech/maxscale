@@ -418,7 +418,9 @@ const Contact = () => {
                     <option value="automation">
                       Business Process Automation
                     </option>
-                    <option value="scalable">Scalable AI Solutions</option>
+                    <option value="scalable">
+                      AI-Driven Marketing Solutions
+                    </option>
                     <option value="other">Custom Solution</option>
                   </select>
                 </div>

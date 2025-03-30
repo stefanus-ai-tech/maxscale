@@ -221,7 +221,7 @@ const WhyAISection = () => {
             </Link>
           </div>
 
-          <div className="lg:w-1/2 animate-fade-in opacity-0 [animation-delay:600ms]">
+          {/* <div className="lg:w-1/2 animate-fade-in opacity-0 [animation-delay:600ms]">
             <div className="relative">
               <div className="absolute -inset-4 bg-accent-gradient rounded-2xl opacity-20 blur-xl animate-pulse-slow"></div>
               <div className="glass-panel p-6 relative">
@@ -253,7 +253,7 @@ const WhyAISection = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

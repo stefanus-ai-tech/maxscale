@@ -1,5 +1,13 @@
 import React from "react";
-import { Facebook, Twitter, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import {
+  Facebook,
+  Twitter,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Building,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
@@ -102,7 +110,7 @@ const Footer = () => {
                   className="text-gray-400 hover:text-blue-400 transition-colors"
                   onClick={(e) => handleLinkClick(e, "/services", "#scalable")}
                 >
-                  Scalable AI Solutions
+                  AI-Driven Marketing Solutions
                 </Link>
               </li>
             </ul>
@@ -177,18 +185,23 @@ const Footer = () => {
             </h3>
             <ul className="space-y-3">
               <li className="flex items-start">
-                <MapPin size={20} className="text-blue-400 mr-3 mt-1" />
+                <Building size={20} className="text-blue-400 mr-3 mt-1" />
+                <span className="text-gray-400">PT Bestari Berdikari</span>
+              </li>
+              <li className="flex items-start">
+                <MapPin size={60} className="text-blue-400 mr-3 mt-1" />
                 <span className="text-gray-400">
-                  123 Innovation Street, Tech City, TC 10111
+                  Jl. Affandi No.4, Gejayan, Condongcatur, Kec. Depok, Kabupaten
+                  Sleman, Daerah Istimewa Yogyakarta 55281
                 </span>
               </li>
               <li className="flex items-center">
                 <Phone size={20} className="text-blue-400 mr-3" />
-                <span className="text-gray-400">+1 (555) 123-4567</span>
+                <span className="text-gray-400">+6285867911453</span>
               </li>
               <li className="flex items-center">
                 <Mail size={20} className="text-blue-400 mr-3" />
-                <span className="text-gray-400">info@maxscale.ai</span>
+                <span className="text-gray-400">info@maxscale.site</span>
               </li>
             </ul>
           </div>
