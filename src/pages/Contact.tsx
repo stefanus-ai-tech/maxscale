@@ -207,7 +207,7 @@ const Contact = () => {
               </h2>
 
               <div className="space-y-6 mb-8">
-                <div className="flex items-start">
+                <div className="items-start">
                   <div className="w-10 h-10 rounded-lg bg-accent-gradient flex items-center justify-center mr-4">
                     <MapPin className="w-5 h-5 text-white" />
                   </div>
@@ -216,7 +216,9 @@ const Contact = () => {
                       Office Location
                     </h3>
                     <p className="text-gray-300">
-                      123 Innovation Street, Tech City, TC 10111
+                      PT Bestari Berdikari, Jl. Affandi No.4, Gejayan,
+                      Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah
+                      Istimewa Yogyakarta 55281
                     </p>
                   </div>
                 </div>
@@ -229,7 +231,7 @@ const Contact = () => {
                     <h3 className="text-white font-semibold mb-1">
                       Email Address
                     </h3>
-                    <p className="text-gray-300">info@maxscale.ai</p>
+                    <p className="text-gray-300">info@maxscale.site</p>
                   </div>
                 </div>
 
@@ -241,7 +243,7 @@ const Contact = () => {
                     <h3 className="text-white font-semibold mb-1">
                       Phone Number
                     </h3>
-                    <p className="text-gray-300">+1 (555) 123-4567</p>
+                    <p className="text-gray-300">+6285867911453</p>
                   </div>
                 </div>
 
@@ -254,7 +256,7 @@ const Contact = () => {
                       Business Hours
                     </h3>
                     <p className="text-gray-300">
-                      Monday - Friday: 9am - 6pm EST
+                      Monday - Friday: 9am - 6pm GMT + 7
                     </p>
                   </div>
                 </div>
